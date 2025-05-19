@@ -21,7 +21,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'default-secret-key')
 
 # MongoDB connection
-client = MongoClient(os.environ.get('MONGO_URI', 'mongodb://localhost:27017/'))
+client = MongoClient(os.environ.get('MONGO_URI', 'mongodb+srv://mohammedfarhandev:farhan@projectdb.vswn53r.mongodb.net/?retryWrites=true&w=majority&appName=ProjectDB'))
 db = client['expense_tracker']
 users_collection = db['users']
 transactions_collection = db['transactions']
