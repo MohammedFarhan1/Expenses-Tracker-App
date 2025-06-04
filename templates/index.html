@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary-color: #10b981;
+            --secondary-hover: #059669;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --light-bg: #f9fafb;
+            --dark-bg: #111827;
+            --light-text: #f3f4f6;
+            --dark-text: #1f2937;
+            --border-color: #e5e7eb;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            flex: 1;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.625rem 1.5rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            margin: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #f3f4f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .features {
+            padding: 4rem 0;
+        }
+
+        .features h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            position: relative;
+        }
+
+        .features h2:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -1rem;
+            justify-content: center;
+        }
+
+        .col {
+            flex: 1;
+            padding: 1rem;
+            min-width: 280px;
+            max-width: 400px;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 1.75rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.25rem;
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .feature-card p {
+            margin-bottom: 0;
+            color: #6b7280;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .cta {
+            background-color: #f3f4f6;
+            padding: 4rem 0;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cta h2 {
+            margin-bottom: 1rem;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+        }
+
+        .cta p {
+            margin-bottom: 2rem;
+            color: #6b7280;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .footer {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .col {
+                width: 100%;
+                max-width: 450px;
+            }
+            
+            .hero {
+                padding: 2rem 0;
+            }
+            
+            .features, .cta {
+                padding: 3rem 0;
+            }
+            
+            .btn {
+                display: block;
+                width: 80%;
+                max-width: 300px;
+                margin: 0.5rem auto;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .feature-card {
+                padding: 1.25rem;
+            }
+            
+            .col {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <h1>Take Control of Your Finances</h1>
+            <p>Track, analyze, and optimize your expenses with our powerful and easy-to-use expense tracker.</p>
+            <a href="/login" class="btn btn-secondary">Login</a>
+            <a href="/register" class="btn btn-primary">Get Started</a>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="container">
+            <h2>Features</h2>
+            <div class="row">
+                <div class="col">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <h3>Visual Analytics</h3>
+                        <p>Get insights into your spending habits with beautiful charts and graphs.</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <h3>Categorize Expenses</h3>
+                        <p>Organize your expenses into categories to better understand where your money goes.</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Mobile Responsive</h3>
+                        <p>Access your expense tracker on any device, anytime, anywhere.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <h3>Secure</h3>
+                        <p>Your financial data is encrypted and securely stored.</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-file-export"></i>
+                        </div>
+                        <h3>Export Data</h3>
+                        <p>Export your expense data for further analysis or record-keeping.</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h3>Budget Alerts</h3>
+                        <p>Set budget limits and receive alerts when you're approaching them.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta">
+        <div class="container">
+            <h2>Ready to Start Tracking?</h2>
+            <p>Join thousands of users who have taken control of their finances with our expense tracker.</p>
+            <a href="/register" class="btn btn-primary">Create Free Account</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="container">
+            <p>&copy; 2025 Expense Tracker. All rights reserved by Farhan.</p>
+        </div>
+    </div>
+</body>
+</html>

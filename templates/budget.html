@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Planning - Expense Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary-color: #10b981;
+            --secondary-hover: #059669;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --light-bg: #f9fafb;
+            --dark-bg: #111827;
+            --light-text: #f3f4f6;
+            --dark-text: #1f2937;
+            --border-color: #e5e7eb;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #1f2937;
+            --success-light: #d1fae5;
+            --warning-light: #fef3c7;
+            --danger-light: #fee2e2;
+            --info-light: #dbeafe;
+        }
+
+        /* Light/Dark Mode */
+        .light-mode {
+            --bg-color: var(--light-bg);
+            --text-color: var(--dark-text);
+            --card-bg: var(--card-bg-light);
+            --border: var(--border-color);
+        }
+
+        .dark-mode {
+            --bg-color: var(--dark-bg);
+            --text-color: var(--light-text);
+            --card-bg: var(--card-bg-dark);
+            --border: #374151;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Layout */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -0.5rem;
+        }
+
+        .col {
+            flex: 1;
+            padding: 0.5rem;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        
+        .navbar-brand i {
+            margin-right: 0.5rem;
+            font-size: 1.75rem;
+        }
+
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        .nav-item {
+            margin-left: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-link i {
+            margin-right: 0.5rem;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        
+        .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(79, 70, 229, 0.1);
+            font-weight: 600;
+        }
+        
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+        
+        .mobile-menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            backdrop-filter: blur(3px);
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .page-header h1 {
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .page-header p {
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.625rem 1.25rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-success {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: var(--secondary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-color);
+            background-color: var(--card-bg);
+            background-clip: padding-box;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+        }
+
+        /* Budget Progress */
+        .budget-card {
+            position: relative;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s;
+        }
+        
+        .budget-card:last-child {
+            border-bottom: none;
+        }
+        
+        .budget-card:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .budget-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .budget-card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0;
+            display: flex;
+            justify-content: space-between;
+            flex: 1;
+        }
+
+        .budget-card .category {
+            font-weight: 600;
+        }
+
+        .budget-card .amount {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .budget-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-icon {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            opacity: 0.6;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+        }
+        
+        .btn-icon:hover {
+            opacity: 1;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .budget-trend {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .trend-label {
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-right: 0.5rem;
+        }
+        
+        .trend-value {
+            font-weight: 600;
+        }
+        
+        .trend-value.up {
+            color: var(--danger-color);
+        }
+        
+        .trend-value.down {
+            color: var(--secondary-color);
+        }
+        
+        .trend-value.same {
+            color: var(--info-color);
+        }
+        
+        .trend-value i {
+            margin-right: 0.25rem;
+        }
+        
+        .budget-filter {
+            width: 150px;
+        }
+        
+        .d-flex {
+            display: flex;
+        }
+
+        .justify-content-between {
+            justify-content: space-between;
+        }
+
+        .align-items-center {
+            align-items: center;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+
+        .progress-container {
+            height: 10px;
+            background-color: #e5e7eb;
+            border-radius: 5px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-bar.good {
+            background-color: var(--secondary-color);
+        }
+
+        .progress-bar.warning {
+            background-color: var(--warning-color);
+        }
+
+        .progress-bar.danger {
+            background-color: var(--danger-color);
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* Budget Ring */
+        .budget-overview {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .budget-overview h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .ring-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .progress-ring-circle {
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.3s ease;
+        }
+
+        .progress-ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-ring-text .percentage {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+            line-height: 1;
+        }
+
+        .progress-ring-text .label {
+            font-size: 0.875rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .budget-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+        }
+
+        .budget-stat {
+            text-align: center;
+        }
+
+        .budget-stat .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .budget-stat .label {
+            font-size: 0.875rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* Mode Toggle */
+        .mode-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            transition: background-color 0.2s;
+        }
+
+        .mode-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+            }
+            
+            .d-flex {
+                flex-direction: column;
+            }
+            
+            .d-flex .btn {
+                margin-top: 1rem;
+                width: 100%;
+            }
+            
+            /* Mobile Menu Styles */
+            .menu-toggle {
+                display: block;
+            }
+            
+            .navbar-nav {
+                position: fixed;
+                top: 0;
+                right: -100%; /* Completely off-screen */
+                width: 280px;
+                height: 100vh;
+                background-color: var(--card-bg);
+                flex-direction: column;
+                padding: 5rem 1.5rem 1.5rem;
+                z-index: 999;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+                align-items: flex-start;
+                margin: 0;
+                visibility: hidden; /* Hide the menu completely */
+            }
+            
+            .navbar-nav.active {
+                right: 0;
+                visibility: visible; /* Show the menu when active */
+            }
+            
+            .nav-item {
+                margin: 0;
+                width: 100%;
+                margin-bottom: 1.5rem;
+            }
+            
+            .nav-link {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                font-size: 1.1rem;
+            }
+            
+            .mode-toggle {
+                width: 100%;
+                height: auto;
+                padding: 0.75rem 1rem;
+                justify-content: flex-start;
+                border-radius: 0.5rem;
+                font-size: 1.1rem;
+            }
+            
+            .mode-toggle i {
+                margin-right: 0.5rem;
+            }
+            
+            .ring-container {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .progress-ring-text .percentage {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .budget-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+        
+        /* Alert Cards */
+        .alert-card {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.5rem;
+            position: relative;
+        }
+        
+        .alert-card:last-child {
+            margin-bottom: 0;
+        }
+        
+        .alert-card.warning {
+            background-color: var(--warning-light);
+        }
+        
+        .alert-card.danger {
+            background-color: var(--danger-light);
+        }
+        
+        .alert-card.info {
+            background-color: var(--info-light);
+        }
+        
+        .alert-card.success {
+            background-color: var(--success-light);
+        }
+        
+        .alert-icon {
+            margin-right: 1rem;
+            font-size: 1.25rem;
+        }
+        
+        .alert-card.warning .alert-icon {
+            color: var(--warning-color);
+        }
+        
+        .alert-card.danger .alert-icon {
+            color: var(--danger-color);
+        }
+        
+        .alert-card.info .alert-icon {
+            color: var(--info-color);
+        }
+        
+        .alert-card.success .alert-icon {
+            color: var(--secondary-color);
+        }
+        
+        .alert-content {
+            flex: 1;
+        }
+        
+        .alert-content h4 {
+            margin: 0 0 0.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .alert-content p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .alert-dismiss {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            opacity: 0.5;
+            cursor: pointer;
+            padding: 0.25rem;
+            font-size: 0.9rem;
+        }
+        
+        .alert-dismiss:hover {
+            opacity: 1;
+        }
+        
+        .alert-settings {
+            text-align: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Forecast Styles */
+        .forecast-chart {
+            margin-bottom: 1.5rem;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 200px;
+        }
+        
+        .forecast-summary {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .forecast-item {
+            text-align: center;
+            flex: 1;
+            min-width: 100px;
+            padding: 0.5rem;
+        }
+        
+        .forecast-label {
+            font-size: 0.875rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-bottom: 0.25rem;
+        }
+        
+        .forecast-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .forecast-period {
+            width: 150px;
+        }
+        
+        /* Report Options */
+        .report-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .report-option {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: rgba(0, 0, 0, 0.02);
+            transition: all 0.2s;
+        }
+        
+        .report-option:hover {
+            background-color: rgba(0, 0, 0, 0.04);
+        }
+        
+        .report-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-right: 1rem;
+            width: 40px;
+            text-align: center;
+        }
+        
+        .report-info {
+            flex: 1;
+        }
+        
+        .report-info h4 {
+            margin: 0 0 0.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .report-info p {
+            margin: 0;
+            font-size: 0.875rem;
+            opacity: 0.7;
+        }
+        
+        .btn-outline-primary {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    /* Notification System */
+    .notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: var(--card-bg);
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 300px;
+        max-width: 90vw;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: transform 0.3s, opacity 0.3s;
+        z-index: 1050;
+        border-left: 4px solid var(--info-color);
+    }
+    
+    .notification.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    .notification.success {
+        border-left-color: var(--secondary-color);
+    }
+    
+    .notification.warning {
+        border-left-color: var(--warning-color);
+    }
+    
+    .notification.error {
+        border-left-color: var(--danger-color);
+    }
+    
+    .notification-content {
+        display: flex;
+        align-items: center;
+        flex: 1;
+    }
+    
+    .notification-content i {
+        margin-right: 0.75rem;
+        font-size: 1.25rem;
+    }
+    
+    .notification.success i {
+        color: var(--secondary-color);
+    }
+    
+    .notification.warning i {
+        color: var(--warning-color);
+    }
+    
+    .notification.error i {
+        color: var(--danger-color);
+    }
+    
+    .notification.info i {
+        color: var(--info-color);
+    }
+    
+    .notification-close {
+        background: none;
+        border: none;
+        color: var(--text-color);
+        opacity: 0.5;
+        cursor: pointer;
+        padding: 0.25rem;
+    }
+    
+    .notification-close:hover {
+        opacity: 1;
+    }
+    
+    /* Modal System */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1100;
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0s 0.3s, opacity 0.3s;
+    }
+    
+    .modal.show {
+        visibility: visible;
+        opacity: 1;
+        transition: visibility 0s, opacity 0.3s;
+    }
+    
+    .modal-backdrop {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(3px);
+    }
+    
+    .modal-container {
+        position: relative;
+        background-color: var(--card-bg);
+        border-radius: 0.75rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        width: 500px;
+        max-width: 90vw;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        transform: translateY(20px);
+        transition: transform 0.3s;
+        overflow: hidden;
+    }
+    
+    .modal.show .modal-container {
+        transform: translateY(0);
+    }
+    
+    .modal-header {
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .modal-title {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+    
+    .modal-close {
+        background: none;
+        border: none;
+        color: var(--text-color);
+        opacity: 0.5;
+        cursor: pointer;
+        padding: 0.25rem;
+        font-size: 1.25rem;
+    }
+    
+    .modal-close:hover {
+        opacity: 1;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+        overflow-y: auto;
+    }
+    
+    .modal-footer {
+        padding: 1.25rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+    
+    /* Toggle Switch */
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+    
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    
+    .toggle-switch label {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 24px;
+    }
+    
+    .toggle-switch label:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    
+    .toggle-switch input:checked + label {
+        background-color: var(--primary-color);
+    }
+    
+    .toggle-switch input:checked + label:before {
+        transform: translateX(26px);
+    }
+    
+    /* Range Slider */
+    .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 5px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        transition: opacity .2s;
+    }
+    
+    .slider:hover {
+        opacity: 1;
+    }
+    
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        cursor: pointer;
+    }
+    
+    .slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        cursor: pointer;
+    }
+    
+    .range-value {
+        text-align: center;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+    
+    .form-text {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: var(--text-color);
+        opacity: 0.7;
+    }
+    </style>
+</head>
+<body class="light-mode">
+    <div class="container">
+        <nav class="navbar">
+            <a href="/dashboard" class="navbar-brand">
+                <i class="fas fa-wallet"></i> ExpenseTracker
+            </a>
+            <button id="menu-toggle" class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="navbar-nav" id="navbar-nav">
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link">
+                        <i class="fas fa-chart-pie"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/budget" class="nav-link active">
+                        <i class="fas fa-bullseye"></i> Budget
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/ai_assistant" class="nav-link">
+                        <i class="fas fa-robot"></i> AI Assistant
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/reports" class="nav-link">
+                        <i class="fas fa-file-alt"></i> Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/account" class="nav-link">
+                        <i class="fas fa-user"></i> Account
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <button id="mode-toggle" class="mode-toggle" title="Toggle Dark/Light Mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <a href="/logout" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="page-header">
+            <h1>Budget Planning</h1>
+            <p>Set and track your monthly budget goals</p>
+        </div>
+
+        <div class="row">
+            <div class="col">
+
+                <div class="card">
+                    <h2>Set Monthly Budget</h2>
+                    <form id="budget-form">
+                        <div class="form-group">
+                            <label for="total-budget" class="form-label">Total Monthly Budget (₹)</label>
+                            <input type="number" id="total-budget" class="form-control" value="50000" min="0" step="1000">
+                        </div>
+                        <div class="form-group">
+                            <label for="budget-month" class="form-label">Budget Month</label>
+                            <input type="month" id="budget-month" class="form-control" value="">
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Update Budget</button>
+                            <button type="button" id="copy-last-month" class="btn btn-success">
+                                <i class="fas fa-copy"></i> Copy Last Month
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card">
+                    <h2>Budget Alerts</h2>
+                    <div class="alert-card warning">
+                        <div class="alert-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Housing budget at 95%</h4>
+                            <p>You've almost reached your housing budget limit for this month.</p>
+                        </div>
+                        <button class="alert-dismiss">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="alert-card info">
+                        <div class="alert-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Transportation budget at 80%</h4>
+                            <p>You're approaching your transportation budget limit.</p>
+                        </div>
+                        <button class="alert-dismiss">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="alert-settings">
+                        <button id="manage-alerts" class="btn btn-sm">
+                            <i class="fas fa-cog"></i> Manage Alert Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2>Category Budgets</h2>
+                        <div class="budget-filter">
+                            <select id="budget-view-filter" class="form-control form-control-sm">
+                                <option value="all">All Categories</option>
+                                <option value="active">Active Only</option>
+                                <option value="critical">Critical (>80%)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="budget-card">
+                        <div class="budget-card-header">
+                            <h3>
+                                <span class="category">Food</span>
+                                <span class="amount">₹10,000</span>
+                            </h3>
+                            <div class="budget-actions">
+                                <button class="btn-icon" title="Edit Budget">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon" title="View History">
+                                    <i class="fas fa-history"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar good" style="width: 60%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>₹6,000 spent</span>
+                            <span>₹4,000 left</span>
+                        </div>
+                        <div class="budget-trend">
+                            <span class="trend-label">vs Last Month:</span>
+                            <span class="trend-value down">
+                                <i class="fas fa-arrow-down"></i> 12%
+                            </span>
+                        </div>
+                    </div>
+                    <div class="budget-card">
+                        <div class="budget-card-header">
+                            <h3>
+                                <span class="category">Transportation</span>
+                                <span class="amount">₹5,000</span>
+                            </h3>
+                            <div class="budget-actions">
+                                <button class="btn-icon" title="Edit Budget">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon" title="View History">
+                                    <i class="fas fa-history"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar warning" style="width: 80%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>₹4,000 spent</span>
+                            <span>₹1,000 left</span>
+                        </div>
+                        <div class="budget-trend">
+                            <span class="trend-label">vs Last Month:</span>
+                            <span class="trend-value up">
+                                <i class="fas fa-arrow-up"></i> 8%
+                            </span>
+                        </div>
+                    </div>
+                    <div class="budget-card">
+                        <div class="budget-card-header">
+                            <h3>
+                                <span class="category">Housing</span>
+                                <span class="amount">₹15,000</span>
+                            </h3>
+                            <div class="budget-actions">
+                                <button class="btn-icon" title="Edit Budget">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon" title="View History">
+                                    <i class="fas fa-history"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar danger" style="width: 95%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>₹14,250 spent</span>
+                            <span>₹750 left</span>
+                        </div>
+                        <div class="budget-trend">
+                            <span class="trend-label">vs Last Month:</span>
+                            <span class="trend-value same">
+                                <i class="fas fa-equals"></i> 0%
+                            </span>
+                        </div>
+                    </div>
+                    <div class="budget-card">
+                        <div class="budget-card-header">
+                            <h3>
+                                <span class="category">Entertainment</span>
+                                <span class="amount">₹3,000</span>
+                            </h3>
+                            <div class="budget-actions">
+                                <button class="btn-icon" title="Edit Budget">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon" title="View History">
+                                    <i class="fas fa-history"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar good" style="width: 25%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>₹750 spent</span>
+                            <span>₹2,250 left</span>
+                        </div>
+                        <div class="budget-trend">
+                            <span class="trend-label">vs Last Month:</span>
+                            <span class="trend-value down">
+                                <i class="fas fa-arrow-down"></i> 15%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2>Budget Forecast</h2>
+                        <div class="forecast-period">
+                            <select id="forecast-period" class="form-control form-control-sm">
+                                <option value="30">Next 30 Days</option>
+                                <option value="60">Next 60 Days</option>
+                                <option value="90">Next 90 Days</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="forecast-chart">
+                        <div class="chart-container">
+                            <canvas id="forecastChart" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="forecast-summary">
+                        <div class="forecast-item">
+                            <div class="forecast-label">Projected Expenses</div>
+                            <div class="forecast-value">₹48,500</div>
+                        </div>
+                        <div class="forecast-item">
+                            <div class="forecast-label">Projected Savings</div>
+                            <div class="forecast-value">₹1,500</div>
+                        </div>
+                        <div class="forecast-item">
+                            <div class="forecast-label">Savings Rate</div>
+                            <div class="forecast-value">3%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2>Budget Reports</h2>
+                        <a href="/reports" class="btn btn-primary">View Reports</a>
+                    </div>
+                    <div class="report-options">
+                        <div class="report-option">
+                            <i class="fas fa-chart-pie report-icon"></i>
+                            <div class="report-info">
+                                <h4>Spending Analysis</h4>
+                                <p>Analyze your spending patterns by category</p>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary">Generate</button>
+                        </div>
+                        <div class="report-option">
+                            <i class="fas fa-chart-line report-icon"></i>
+                            <div class="report-info">
+                                <h4>Budget Trends</h4>
+                                <p>View your budget trends over time</p>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary">Generate</button>
+                        </div>
+                        <div class="report-option">
+                            <i class="fas fa-file-export report-icon"></i>
+                            <div class="report-info">
+                                <h4>Export Data</h4>
+                                <p>Export to Excel or PDF format</p>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary">Export</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Add Category Budget</h2>
+                    <form id="category-budget-form">
+                        <div class="form-group">
+                            <label for="category" class="form-label">Category</label>
+                            <select id="category" class="form-control" required>
+                                <option value="Food">Food</option>
+                                <option value="Transportation">Transportation</option>
+                                <option value="Housing">Housing</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Personal">Personal</option>
+                                <option value="Education">Education</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="category-budget" class="form-label">Budget Amount (₹)</label>
+                            <input type="number" id="category-budget" class="form-control" min="0" step="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="budget-period" class="form-label">Budget Period</label>
+                            <select id="budget-period" class="form-control">
+                                <option value="monthly">Monthly</option>
+                                <option value="quarterly">Quarterly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="budget-notes" class="form-label">Notes (Optional)</label>
+                            <textarea id="budget-notes" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-success">Set Budget</button>
+                            <button type="button" id="advanced-options" class="btn btn-outline-primary">
+                                <i class="fas fa-sliders-h"></i> Advanced Options
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark/Light mode toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const modeToggle = document.getElementById('mode-toggle');
+            const body = document.body;
+            const icon = modeToggle.querySelector('i');
+            
+            // Check for saved mode preference or use default
+            const currentMode = localStorage.getItem('mode') || 'light';
+            body.classList.add(currentMode + '-mode');
+            updateIcon(currentMode);
+            
+            // Toggle mode
+            modeToggle.addEventListener('click', function() {
+                if (body.classList.contains('light-mode')) {
+                    body.classList.replace('light-mode', 'dark-mode');
+                    localStorage.setItem('mode', 'dark');
+                    updateIcon('dark');
+                } else {
+                    body.classList.replace('dark-mode', 'light-mode');
+                    localStorage.setItem('mode', 'light');
+                    updateIcon('light');
+                }
+            });
+            
+            function updateIcon(mode) {
+                if (mode === 'dark') {
+                    icon.classList.replace('fa-moon', 'fa-sun');
+                } else {
+                    icon.classList.replace('fa-sun', 'fa-moon');
+                }
+            }
+            
+            // Mobile menu functionality
+            const menuToggle = document.getElementById('menu-toggle');
+            const navbarNav = document.getElementById('navbar-nav');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            
+            menuToggle.addEventListener('click', function() {
+                navbarNav.classList.toggle('active');
+                overlay.style.display = navbarNav.classList.contains('active') ? 'block' : 'none';
+                
+                // Change icon based on menu state
+                const menuIcon = menuToggle.querySelector('i');
+                if (navbarNav.classList.contains('active')) {
+                    menuIcon.classList.replace('fa-bars', 'fa-times');
+                } else {
+                    menuIcon.classList.replace('fa-times', 'fa-bars');
+                }
+            });
+            
+            // Close menu when clicking on overlay
+            overlay.addEventListener('click', function() {
+                navbarNav.classList.remove('active');
+                overlay.style.display = 'none';
+                menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+            });
+            
+            // Close menu when clicking on a link
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        navbarNav.classList.remove('active');
+                        overlay.style.display = 'none';
+                        menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+                    }
+                });
+            });
+
+            // Budget form submission
+            document.getElementById('budget-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const totalBudget = document.getElementById('total-budget').value;
+                alert(`Total budget updated to ₹${totalBudget}`);
+                // Here you would normally send this to the server
+            });
+
+            // Category budget form submission
+            document.getElementById('category-budget-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const category = document.getElementById('category').value;
+                const amount = document.getElementById('category-budget').value;
+                const period = document.getElementById('budget-period').value;
+                
+                // Show success notification instead of alert
+                showNotification(`Budget for ${category} set to ₹${amount} (${period})`, 'success');
+                
+                // Reset form
+                this.reset();
+                // Here you would normally send this to the server
+            });
+            
+            // Budget alerts dismiss functionality
+            document.querySelectorAll('.alert-dismiss').forEach(button => {
+                button.addEventListener('click', function() {
+                    const alertCard = this.closest('.alert-card');
+                    alertCard.style.opacity = '0';
+                    setTimeout(() => {
+                        alertCard.style.display = 'none';
+                    }, 300);
+                });
+            });
+            
+            // Copy last month button
+            document.getElementById('copy-last-month').addEventListener('click', function() {
+                showNotification('Budget copied from last month', 'info');
+            });
+            
+            // Advanced options button
+            document.getElementById('advanced-options').addEventListener('click', function() {
+                showModal('Budget Advanced Options', `
+                    <div class="form-group">
+                        <label class="form-label">Rollover Unspent Budget</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="rollover-toggle">
+                            <label for="rollover-toggle"></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Alert Threshold (%)</label>
+                        <input type="range" min="50" max="100" value="80" class="slider" id="alert-threshold">
+                        <div class="range-value">80%</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Budget Priority</label>
+                        <select class="form-control">
+                            <option value="high">High</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                `);
+            });
+            
+            // Manage alerts button
+            document.getElementById('manage-alerts').addEventListener('click', function() {
+                showModal('Alert Settings', `
+                    <div class="form-group">
+                        <label class="form-label">Email Notifications</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="email-toggle" checked>
+                            <label for="email-toggle"></label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Warning Threshold</label>
+                        <input type="number" class="form-control" value="80" min="1" max="100">
+                        <small class="form-text">Percentage of budget spent to trigger warning</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Critical Threshold</label>
+                        <input type="number" class="form-control" value="95" min="1" max="100">
+                        <small class="form-text">Percentage of budget spent to trigger critical alert</small>
+                    </div>
+                `);
+            });
+            
+            // Initialize forecast chart (using Chart.js)
+            function initForecastChart() {
+                // Check if Chart.js is loaded
+                if (typeof Chart === 'undefined') {
+                    // Load Chart.js dynamically
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+                    script.onload = createChart;
+                    document.head.appendChild(script);
+                } else {
+                    createChart();
+                }
+                
+                function createChart() {
+                    const ctx = document.getElementById('forecastChart').getContext('2d');
+                    
+                    // Sample data
+                    const labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+                    const budgetData = [50000, 50000, 50000, 50000];
+                    const expenseData = [12500, 25000, 37500, 48500];
+                    
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: 'Budget',
+                                    data: budgetData,
+                                    borderColor: '#4f46e5',
+                                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                                    borderWidth: 2,
+                                    fill: false,
+                                    tension: 0.1
+                                },
+                                {
+                                    label: 'Projected Expenses',
+                                    data: expenseData,
+                                    borderColor: '#f59e0b',
+                                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                                    borderWidth: 2,
+                                    fill: true,
+                                    tension: 0.4
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return '₹' + value;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Helper function to show notifications
+            function showNotification(message, type = 'info') {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <i class="fas ${getIconForType(type)}"></i>
+                        <span>${message}</span>
+                    </div>
+                    <button class="notification-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                // Add to document
+                document.body.appendChild(notification);
+                
+                // Show with animation
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+                
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 5000);
+                
+                // Close button functionality
+                notification.querySelector('.notification-close').addEventListener('click', function() {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                });
+                
+                function getIconForType(type) {
+                    switch(type) {
+                        case 'success': return 'fa-check-circle';
+                        case 'warning': return 'fa-exclamation-triangle';
+                        case 'error': return 'fa-times-circle';
+                        case 'info':
+                        default: return 'fa-info-circle';
+                    }
+                }
+            }
+            
+            // Helper function to show modal
+            function showModal(title, content) {
+                // Create modal element if it doesn't exist
+                let modal = document.getElementById('app-modal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'app-modal';
+                    modal.className = 'modal';
+                    modal.innerHTML = `
+                        <div class="modal-backdrop"></div>
+                        <div class="modal-container">
+                            <div class="modal-header">
+                                <h3 class="modal-title"></h3>
+                                <button class="modal-close">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body"></div>
+                            <div class="modal-footer">
+                                <button class="btn btn-outline-primary modal-cancel">Cancel</button>
+                                <button class="btn btn-primary modal-save">Save Changes</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                    
+                    // Close modal events
+                    modal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+                    modal.querySelector('.modal-close').addEventListener('click', closeModal);
+                    modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
+                    modal.querySelector('.modal-save').addEventListener('click', function() {
+                        showNotification('Settings saved successfully', 'success');
+                        closeModal();
+                    });
+                }
+                
+                // Update modal content
+                modal.querySelector('.modal-title').textContent = title;
+                modal.querySelector('.modal-body').innerHTML = content;
+                
+                // Show modal
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                
+                function closeModal() {
+                    modal.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            }
+            
+            // Initialize forecast chart
+            initForecastChart();
+            
+            // Budget view filter functionality
+            document.getElementById('budget-view-filter').addEventListener('change', function() {
+                const filter = this.value;
+                const budgetCards = document.querySelectorAll('.budget-card');
+                
+                budgetCards.forEach(card => {
+                    const progressBar = card.querySelector('.progress-bar');
+                    const width = parseInt(progressBar.style.width);
+                    
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else if (filter === 'critical' && width >= 80) {
+                        card.style.display = 'block';
+                    } else if (filter === 'active' && width > 0) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Set current month in budget month input
+            const now = new Date();
+            const month = now.getMonth() + 1;
+            const year = now.getFullYear();
+            document.getElementById('budget-month').value = `${year}-${month.toString().padStart(2, '0')}`;
+        });
+    </script>
+</body>
+</html>
