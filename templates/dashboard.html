@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard - Expense Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard-mobile.css') }}">
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -893,47 +895,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/mobile-menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/responsive-charts.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/touch-friendly.js') }}"></script>
     <script>
-
-        // Add this JavaScript code before any existing script in dashboard.html
-document.addEventListener('DOMContentLoaded', function() {
-    // Mobile menu functionality
-    const menuToggle = document.getElementById('menu-toggle');
-    const navbarNav = document.getElementById('navbar-nav');
-    const overlay = document.getElementById('mobile-menu-overlay');
-    
-    menuToggle.addEventListener('click', function() {
-        navbarNav.classList.toggle('active');
-        overlay.style.display = navbarNav.classList.contains('active') ? 'block' : 'none';
-        
-        // Change icon based on menu state
-        const menuIcon = menuToggle.querySelector('i');
-        if (navbarNav.classList.contains('active')) {
-            menuIcon.classList.replace('fa-bars', 'fa-times');
-        } else {
-            menuIcon.classList.replace('fa-times', 'fa-bars');
-        }
-    });
-    
-    // Close menu when clicking on overlay
-    overlay.addEventListener('click', function() {
-        navbarNav.classList.remove('active');
-        overlay.style.display = 'none';
-        menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
-    });
-    
-    // Close menu when clicking on a link
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
-                navbarNav.classList.remove('active');
-                overlay.style.display = 'none';
-                menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
-            }
-        });
-    });
-});
+// Mobile menu functionality is now in a separate file
 
 
         // Dark/Light mode toggle
@@ -1239,23 +1205,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }]
                 };
                 
-                expenseCategoryChart = new Chart(document.getElementById('expense-category-chart'), {
-                    type: 'pie',
-                    data: expenseCategoryData,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'right'
-                            },
-                            title: {
-                                display: true,
-                                text: 'Expense Categories'
-                            }
-                        }
-                    }
-                });
+                expenseCategoryChart = createOrUpdateChart('expense-category-chart', 'pie', expenseCategoryData);
                 
                 // Create income category chart
                 const incomeCategoryData = {
@@ -1268,23 +1218,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }]
                 };
                 
-                incomeCategoryChart = new Chart(document.getElementById('income-category-chart'), {
-                    type: 'pie',
-                    data: incomeCategoryData,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'right'
-                            },
-                            title: {
-                                display: true,
-                                text: 'Income Categories'
-                            }
-                        }
-                    }
-                });
+                incomeCategoryChart = createOrUpdateChart('income-category-chart', 'pie', incomeCategoryData);
                 
                 // Create daily chart
                 const dailyData = {
@@ -1307,25 +1241,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     ]
                 };
                 
-                dailyChart = new Chart(document.getElementById('daily-chart'), {
-                    type: 'bar',
-                    data: dailyData,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        },
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Daily Cash Flow'
-                            }
-                        }
-                    }
-                });
+                dailyChart = createOrUpdateChart('daily-chart', 'bar', dailyData);
+                
+                // Function to recreate charts on window resize
+                window.recreateChartsOnResize = function() {
+                    createOrUpdateChart('expense-category-chart', 'pie', expenseCategoryData);
+                    createOrUpdateChart('income-category-chart', 'pie', incomeCategoryData);
+                    createOrUpdateChart('daily-chart', 'bar', dailyData);
+                };
             } catch (error) {
                 console.error('Error loading summary:', error);
             }

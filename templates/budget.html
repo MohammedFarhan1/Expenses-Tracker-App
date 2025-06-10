@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Budget Planning - Expense Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -41,6 +42,10 @@
             --text-color: var(--light-text);
             --card-bg: var(--card-bg-dark);
             --border: #374151;
+            --warning-light: rgba(245, 158, 11, 0.2);
+            --danger-light: rgba(239, 68, 68, 0.2);
+            --info-light: rgba(59, 130, 246, 0.2);
+            --success-light: rgba(16, 185, 129, 0.2);
         }
 
         body {
@@ -63,12 +68,16 @@
         .row {
             display: flex;
             flex-wrap: wrap;
-            margin: -0.5rem;
+            margin: 0 -0.5rem;
+            width: 100%;
+            justify-content: center;
         }
 
         .col {
             flex: 1;
             padding: 0.5rem;
+            min-width: 300px;
+            max-width: 600px;
         }
 
         /* Cards */
@@ -281,6 +290,10 @@
         .budget-card:hover {
             background-color: rgba(0, 0, 0, 0.02);
         }
+        
+        .dark-mode .budget-card:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
 
         .budget-card-header {
             display: flex;
@@ -367,6 +380,18 @@
             width: 150px;
         }
         
+        @media (max-width: 768px) {
+            .budget-filter {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+            
+            .d-flex.justify-content-between.align-items-center {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+        }
+        
         .d-flex {
             display: flex;
         }
@@ -389,6 +414,10 @@
             border-radius: 5px;
             margin-bottom: 0.5rem;
             overflow: hidden;
+        }
+        
+        .dark-mode .progress-container {
+            background-color: #374151;
         }
 
         .progress-bar {
@@ -514,6 +543,15 @@
         @media (max-width: 768px) {
             .row {
                 flex-direction: column;
+                align-items: center;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .col {
+                width: 100%;
+                max-width: 100%;
+                padding: 0;
             }
             
             .d-flex {
@@ -610,18 +648,29 @@
         
         .alert-card.warning {
             background-color: var(--warning-light);
+            color: #92400e;
         }
         
         .alert-card.danger {
             background-color: var(--danger-light);
+            color: #b91c1c;
         }
         
         .alert-card.info {
             background-color: var(--info-light);
+            color: #1e40af;
         }
         
         .alert-card.success {
             background-color: var(--success-light);
+            color: #065f46;
+        }
+        
+        .dark-mode .alert-card.warning,
+        .dark-mode .alert-card.danger,
+        .dark-mode .alert-card.info,
+        .dark-mode .alert-card.success {
+            color: #f3f4f6;
         }
         
         .alert-icon {
@@ -685,6 +734,11 @@
         .btn-sm {
             padding: 0.375rem 0.75rem;
             font-size: 0.875rem;
+            color: var(--text-color);
+        }
+        
+        .dark-mode .btn-sm {
+            background-color: rgba(255, 255, 255, 0.1);
         }
         
         /* Forecast Styles */
@@ -747,6 +801,14 @@
             background-color: rgba(0, 0, 0, 0.04);
         }
         
+        .dark-mode .report-option {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .dark-mode .report-option:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        
         .report-icon {
             font-size: 1.5rem;
             color: var(--primary-color);
@@ -779,6 +841,16 @@
         
         .btn-outline-primary:hover {
             background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .dark-mode .btn-outline-primary {
+            color: #a5b4fc;
+            border-color: #a5b4fc;
+        }
+        
+        .dark-mode .btn-outline-primary:hover {
+            background-color: #4f46e5;
             color: white;
         }
     /* Notification System */
@@ -904,6 +976,7 @@
         transform: translateY(20px);
         transition: transform 0.3s;
         overflow: hidden;
+        margin: 0 1rem;
     }
     
     .modal.show .modal-container {
@@ -977,6 +1050,10 @@
         border-radius: 24px;
     }
     
+    .dark-mode .toggle-switch label {
+        background-color: #4b5563;
+    }
+    
     .toggle-switch label:before {
         position: absolute;
         content: "";
@@ -1007,6 +1084,10 @@
         outline: none;
         opacity: 0.7;
         transition: opacity .2s;
+    }
+    
+    .dark-mode .slider {
+        background: #4b5563;
     }
     
     .slider:hover {
@@ -1405,6 +1486,8 @@
         </div>
     </div>
 
+    <script src="{{ url_for('static', filename='js/mobile-menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/touch-friendly.js') }}"></script>
     <script>
         // Dark/Light mode toggle
         document.addEventListener('DOMContentLoaded', function() {
@@ -1438,42 +1521,7 @@
                 }
             }
             
-            // Mobile menu functionality
-            const menuToggle = document.getElementById('menu-toggle');
-            const navbarNav = document.getElementById('navbar-nav');
-            const overlay = document.getElementById('mobile-menu-overlay');
-            
-            menuToggle.addEventListener('click', function() {
-                navbarNav.classList.toggle('active');
-                overlay.style.display = navbarNav.classList.contains('active') ? 'block' : 'none';
-                
-                // Change icon based on menu state
-                const menuIcon = menuToggle.querySelector('i');
-                if (navbarNav.classList.contains('active')) {
-                    menuIcon.classList.replace('fa-bars', 'fa-times');
-                } else {
-                    menuIcon.classList.replace('fa-times', 'fa-bars');
-                }
-            });
-            
-            // Close menu when clicking on overlay
-            overlay.addEventListener('click', function() {
-                navbarNav.classList.remove('active');
-                overlay.style.display = 'none';
-                menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
-            });
-            
-            // Close menu when clicking on a link
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    if (window.innerWidth <= 768) {
-                        navbarNav.classList.remove('active');
-                        overlay.style.display = 'none';
-                        menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
-                    }
-                });
-            });
+            // Mobile menu functionality is now in a separate file
 
             // Budget form submission
             document.getElementById('budget-form').addEventListener('submit', function(e) {

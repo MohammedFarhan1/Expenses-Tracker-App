@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Account - ExpenseTracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}">
     <style>
         :root {
             --primary-color: #4f46e5;
@@ -710,6 +711,8 @@
         </div>
     </div>
 
+    <script src="{{ url_for('static', filename='js/mobile-menu.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/touch-friendly.js') }}"></script>
     <script>
         // Dark/Light mode toggle
         const modeToggle = document.getElementById('mode-toggle');
@@ -742,41 +745,7 @@
             }
         }
         
-        // Mobile menu toggle
-        const menuToggle = document.getElementById('menu-toggle');
-        const navbarNav = document.getElementById('navbar-nav');
-        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-        
-        menuToggle.addEventListener('click', function() {
-            navbarNav.classList.toggle('active');
-            mobileMenuOverlay.style.display = navbarNav.classList.contains('active') ? 'block' : 'none';
-            
-            // Change icon based on menu state
-            const menuIcon = menuToggle.querySelector('i');
-            if (navbarNav.classList.contains('active')) {
-                menuIcon.classList.replace('fa-bars', 'fa-times');
-            } else {
-                menuIcon.classList.replace('fa-times', 'fa-bars');
-            }
-        });
-        
-        mobileMenuOverlay.addEventListener('click', function() {
-            navbarNav.classList.remove('active');
-            mobileMenuOverlay.style.display = 'none';
-            menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
-        });
-        
-        // Close menu when clicking on a link
-        const navLinks = document.querySelectorAll('.nav-link');
-        navLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                if (window.innerWidth <= 768) {
-                    navbarNav.classList.remove('active');
-                    mobileMenuOverlay.style.display = 'none';
-                    menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
-                }
-            });
-        });
+        // Mobile menu functionality is now in a separate file
         
         // Tab functionality
         const tabButtons = document.querySelectorAll('.tab-btn');
